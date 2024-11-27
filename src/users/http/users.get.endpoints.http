@@ -1,2 +1,2 @@
-GET http://localhost:3000/users/13?limit
+GET http://localhost:3000/users/13?limit=13
 content-type: application/json

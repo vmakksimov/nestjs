@@ -11,7 +11,14 @@ import {
   Headers,
   Ip,
   ParseIntPipe,
+  DefaultValuePipe,
+  ValidationPipe
 } from '@nestjs/common';
+import { CreateUserDto } from './dtos/create-user.dto';
+import { GetUsersParamDto } from './dtos/get-users-params.dto';
+import { get } from 'http';
+import { isInstance } from 'class-validator';
+import { PatchUserDto } from './dtos/patch-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -24,10 +31,11 @@ export class UsersController {
    * @returns A string indicating a GET request was made to the users endpoint.
    */
   public getUsers(
-    @Param('id', ParseIntPipe) id: number | undefined,
-    @Query('limit') limit: any,
+    @Param() getUsersParamDto: GetUsersParamDto,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
   ) {
-    console.log('type of id,', typeof id);
+    console.log('type of id,', getUsersParamDto instanceof GetUsersParamDto);
     console.log('query,', limit);
 
     return 'You send a get request to users endpoint';
@@ -35,15 +43,18 @@ export class UsersController {
 
   @Post()
   public createUsers(
-    @Body() body: any,
-    @Headers() headers: any,
-    @Ip() ip: any,
+    @Body() createUserDto: CreateUserDto,
+ 
   ) {
     // console.log('body', body)
-    const { firstName, lastName, email, password } = body;
+    const { firstName, lastName, email, password } = createUserDto;
     console.log(firstName, lastName, email, password);
-    console.log('headers', headers);
-    console.log('ip', ip);
+
     return 'You sent a POST request to users endpiint.';
+  }
+
+  @Patch()
+  public patchUser(@Body() patchUserDto: PatchUserDto) {
+      return patchUserDto;
   }
 }
