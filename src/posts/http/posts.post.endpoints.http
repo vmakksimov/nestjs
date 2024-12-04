@@ -4,15 +4,17 @@ content-type: application/json
 {
     "title" : "Viktor12345",
     "postType": "post",
-    "slug" : "slug-test-js",
+    "slug" : "slug-test-js-6",
     "status":  "draft",
-    "schema" : "test",
+    "content" : "test content",
+    "schema" : "{\"sidebarEnabled\": true, \"footerActive\": true}",
     "publishOn": "2024-11-29T07:46:32+0000",
-    "tags": ["nestjs", "typescript"],
-    "metaOptions": [
+    //"tags": ["nestjs", "typescript"],
+    "metaOptions": 
         {
-            "key": "testkey",
-            "value" :"testvalue"
-        }
-    ]
+           "metaValue" : "{\"sidebarEnabled\": false, \"footerActive\": true}"
+           
+        },
+    "authorId": 2
+    
 }

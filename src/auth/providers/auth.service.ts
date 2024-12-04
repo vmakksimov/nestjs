@@ -7,7 +7,7 @@ export class AuthService {
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService
 ) {}
-  public login(email: string, password: string, id: string) {
+  public login(email: string, password: string, id: number) {
     const user = this.usersService.findById(id);
     return 'SAMPLE_TOKEN';
     //check if the user exists in DB

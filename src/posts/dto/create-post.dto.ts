@@ -10,10 +10,12 @@ import {
   IsISO8601,
   IsArray,
   ValidateNested,
+  MaxLength,
+  IsInt,
 } from 'class-validator';
 import { postType } from '../enums/postType.enum';
 import { postStatus } from '../enums/postStatus.enum';
-import { CreatePostMetaOptionsDto } from './create-post-meta-options.dto';
+import { CreatePostMetaOptionsDto } from '../../meta-options/dtos/create-post-meta-options.dto';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -24,6 +26,7 @@ export class CreatePostDto {
   @IsString()
   @MinLength(4)
   @IsNotEmpty()
+  @MaxLength(96)
   title: string;
 
 
@@ -99,25 +102,31 @@ export class CreatePostDto {
   tags?: string[];
 
   @ApiPropertyOptional({
-      type: 'array',
+      type: 'object',
       required: false,
       items: {
         type: 'object',
         properties: {
-          key: { type: 'string',
-            description: 'This is the key for the blog post meta options',
-            example: 'sidebarEnabled'
+          metaValue: { type: 'json',
+            description: 'This metaValue is JSON string',
+            example: '{"sidebarEnabled":true,"sidebarPosition":"left"}'
            },
-          value: { type: 'any',
-            description: 'This is the value for the blog post meta options',
-            example: true
-           }
+          
         }
       }
   })
   @IsOptional()
-  @IsArray()
   @ValidateNested({each: true})
   @Type(()=> CreatePostMetaOptionsDto)
-  metaOptions?: CreatePostMetaOptionsDto[];
+  metaOptions?: CreatePostMetaOptionsDto | null;
+
+
+  @ApiProperty({
+    type: 'integer',
+    required: true,
+    example: 1
+  })
+  @IsInt()
+  @IsNotEmpty()
+  authorId: number;
 }

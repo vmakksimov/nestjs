@@ -80,8 +80,9 @@ export class UsersController {
     // console.log('body', body)
     const { firstName, lastName, email, password } = createUserDto;
     console.log(firstName, lastName, email, password);
+    const newUser = this.userService.createUser(createUserDto);
 
-    return 'You sent a POST request to users endpiint.';
+    return newUser;
   }
 
   @Patch()

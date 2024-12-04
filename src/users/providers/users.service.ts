@@ -1,6 +1,10 @@
 import { Injectable, forwardRef, Inject } from '@nestjs/common';
 import { GetUsersParamDto } from '../dtos/get-users-params.dto';
 import { AuthService } from 'src/auth/providers/auth.service';
+import { Repository } from 'typeorm';
+import { User } from '../user.entity';
+import { CreateUserDto } from '../dtos/create-user.dto';
+import { InjectRepository } from '@nestjs/typeorm';
 
 
 /** Business logic for users */
@@ -14,7 +18,9 @@ export class UsersService {
    */
   constructor(
     @Inject(forwardRef(() => AuthService))
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    @InjectRepository(User)
+    private readonly usersRepository: Repository<User>
   ){}
 
 /**
@@ -25,6 +31,22 @@ export class UsersService {
  */
   private isAuth(){
     return this.authService.isAuth();
+  }
+
+  public async createUser(createUserDto: CreateUserDto) {
+    const existingUser = await this.usersRepository.findOne({
+      where: {
+        email: createUserDto.email
+      }
+    })
+
+    if (existingUser) {
+      throw new Error('User already exists')
+    }
+    let user = this.usersRepository.create(createUserDto);
+    user = await this.usersRepository.save(user)
+    return user
+
   }
   public findAll(
     getUsersParamDto: GetUsersParamDto,
@@ -43,18 +65,8 @@ export class UsersService {
       },
     ];
   }
-  public findById(id: string) {
-    if (this.authService.isAuth()){
-      return {
-        id: 12,
-        firstName: 'John',
-        email: 'john@doe.com',
-      }
-    } else {
-      return {
-        message: 'User is not authenticated'
-    } 
-    }
+  public async findById(id: number) {
+    return await this.usersRepository.findOneBy({id})
   }
     
 }
