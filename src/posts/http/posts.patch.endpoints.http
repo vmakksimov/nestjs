@@ -1,4 +1,4 @@
-PATCH http://localhost:3000/posts/1234
+PATCH http://localhost:3000/posts
 content-type: application/json
 
 

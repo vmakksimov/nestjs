@@ -33,9 +33,11 @@ export class PostsController {
     status: 200,
     description: 'The post has been successfully updated.',
   })
+  
   @Patch('/:postId')
   public updatePost(@Body() patchPostsDto: PatchPostDto) {
     console.log('patchPostsDto', patchPostsDto);
+    return this.postsService.updatePost(patchPostsDto)
   }
 
   @Delete('/:postId')

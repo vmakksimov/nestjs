@@ -4,7 +4,7 @@ content-type: application/json
 {
     "title" : "Viktor12345",
     "postType": "post",
-    "slug" : "slug-test-js-6",
+    "slug" : "slug-test-js-9",
     "status":  "draft",
     "content" : "test content",
     "schema" : "{\"sidebarEnabled\": true, \"footerActive\": true}",
@@ -15,6 +15,7 @@ content-type: application/json
            "metaValue" : "{\"sidebarEnabled\": false, \"footerActive\": true}"
            
         },
-    "authorId": 2
+    "authorId": 1,
+    "tags" : [1, 2]
     
 }

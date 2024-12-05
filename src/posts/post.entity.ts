@@ -1,8 +1,9 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { postType } from './enums/postType.enum';
 import { postStatus } from './enums/postStatus.enum';
 import { MetaOption } from "src/meta-options/meta-option.entity";
 import { User } from "src/users/user.entity";
+import { Tag } from "src/tags/tag.entity";
 @Entity()
 export class Post {
     @PrimaryGeneratedColumn()
@@ -64,7 +65,11 @@ export class Post {
     })
     publishOn?: Date;
 
-    tags?: string[];
+    @ManyToMany(() => Tag, (tag)=> tag.posts, {
+        eager: true
+    })
+    @JoinTable()
+    tags?: Tag[];
 
     @OneToOne(() => MetaOption, (metaOptions)=> metaOptions.post, {cascade: true, eager: true})
     @JoinColumn()

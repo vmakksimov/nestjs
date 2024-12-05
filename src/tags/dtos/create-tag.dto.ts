@@ -17,7 +17,6 @@ export class CreateTagDto {
   @MinLength(3)
   @MaxLength(256)
   @IsNotEmpty()
-  @IsJSON()
   name: string;
 
   @ApiProperty({

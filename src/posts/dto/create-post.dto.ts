@@ -18,6 +18,7 @@ import { postStatus } from '../enums/postStatus.enum';
 import { CreatePostMetaOptionsDto } from '../../meta-options/dtos/create-post-meta-options.dto';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Tag } from 'src/tags/tag.entity';
 
 export class CreatePostDto {
   @ApiProperty({
@@ -92,14 +93,13 @@ export class CreatePostDto {
 
   @ApiPropertyOptional({
     type: 'array',
-    description: 'This is the tags for the blog post',
-    example: ['tag1', 'tag2', 'tag3']
+    description: 'This array of ids of tags',
+    example: [1, 2, 3]
   })
   @IsOptional()
   @IsArray()
-  @IsString({ each: true })
-  @MinLength(3, { each: true })
-  tags?: string[];
+  @IsInt({ each: true })
+  tags?: number[];
 
   @ApiPropertyOptional({
       type: 'object',
