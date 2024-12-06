@@ -1,4 +1,12 @@
-import { Injectable, forwardRef, Inject } from '@nestjs/common';
+import {
+  Injectable,
+  forwardRef,
+  Inject,
+  RequestTimeoutException,
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { GetUsersParamDto } from '../dtos/get-users-params.dto';
 import { AuthService } from 'src/auth/providers/auth.service';
 import { Repository } from 'typeorm';
@@ -7,7 +15,6 @@ import { CreateUserDto } from '../dtos/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigType } from '@nestjs/config';
 import profileConfig from '../config/profile.config';
-
 
 /** Business logic for users */
 @Injectable()
@@ -25,42 +32,74 @@ export class UsersService {
     private readonly usersRepository: Repository<User>,
 
     @Inject(profileConfig.KEY)
-    private readonly profileConfiguration: ConfigType<typeof profileConfig>
-  ){}
+    private readonly profileConfiguration: ConfigType<typeof profileConfig>,
+  ) {}
 
-/**
- * Checks if the current user is authenticated by delegating the call
- * to the AuthService's isAuth method.
- *
- * @returns {boolean} - True if the user is authenticated, otherwise false.
- */
-  private isAuth(){
+  /**
+   * Checks if the current user is authenticated by delegating the call
+   * to the AuthService's isAuth method.
+   *
+   * @returns {boolean} - True if the user is authenticated, otherwise false.
+   */
+  private isAuth() {
     return this.authService.isAuth();
   }
 
   public async createUser(createUserDto: CreateUserDto) {
-    const existingUser = await this.usersRepository.findOne({
-      where: {
-        email: createUserDto.email
-      }
-    })
+    let existingUser = undefined;
+    
+    try {
+      existingUser = await this.usersRepository.findOne({
+        where: {
+          email: createUserDto.email,
+        },
+      });
+    } catch (error) {
+      throw new RequestTimeoutException(
+        'Unable to process your request, please try again',
+        {
+          description: `Something went wrong with the database: ${error.message}`,
+        },
+      );
+    }
 
     if (existingUser) {
-      throw new Error('User already exists')
+      throw new BadRequestException(
+        `User with email ${createUserDto.email} already exists`,
+      );
     }
-    let user = this.usersRepository.create(createUserDto);
-    user = await this.usersRepository.save(user)
-    return user
 
+    let newUser = this.usersRepository.create(createUserDto);
+    
+    try {
+      newUser = await this.usersRepository.save(newUser);
+    } catch (error) {
+      throw new RequestTimeoutException(
+        'Unable to save user in DB',
+        {
+          description: `Something went wrong with the database: ${error.message}`,
+        },
+      );
+    }
+    return newUser;
   }
   public findAll(
     getUsersParamDto: GetUsersParamDto,
     limit: number,
     page: number,
   ) {
-    console.log('profile config', this.profileConfiguration)
+    // custom exception
+    throw new HttpException({
+      status: HttpStatus.BAD_REQUEST,
+      error: 'This is a custom exception',
+      fileName: 'users.service.ts',
+      lineNumber: 89, 
+    },
+    HttpStatus.BAD_REQUEST
+  );   
+    console.log('profile config', this.profileConfiguration);
     if (this.isAuth()) return 'You are authenticated';
-    
+
     return [
       {
         firstName: 'John',
@@ -73,7 +112,22 @@ export class UsersService {
     ];
   }
   public async findById(id: number) {
-    return await this.usersRepository.findOneBy({id})
+    let user = undefined;
+    try {
+      user = await this.usersRepository.findOneBy({ id });
+    } catch (error) { 
+      throw new RequestTimeoutException(
+        'Unable to process your request, please try again',
+        {
+          description: `Something went wrong with the database: ${error.message}`,
+        },
+      );
+    }
+
+    if (!user) {
+      throw new BadRequestException(`User with id ${id} does not exist`);
+    }
+
+    return user;
   }
-    
 }
