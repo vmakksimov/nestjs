@@ -73,7 +73,6 @@ export class PostsService {
     let tags = undefined;
     let post = undefined;
 
-
     try {
       tags = await this.tagsService.findMultipleTags(patchPostDto.tags)
     } catch (error) {

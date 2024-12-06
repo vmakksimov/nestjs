@@ -9,12 +9,13 @@ import {
 } from '@nestjs/common';
 import { GetUsersParamDto } from '../dtos/get-users-params.dto';
 import { AuthService } from 'src/auth/providers/auth.service';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { User } from '../user.entity';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigType } from '@nestjs/config';
 import profileConfig from '../config/profile.config';
+import { create } from 'domain';
 
 /** Business logic for users */
 @Injectable()
@@ -33,6 +34,8 @@ export class UsersService {
 
     @Inject(profileConfig.KEY)
     private readonly profileConfiguration: ConfigType<typeof profileConfig>,
+
+    private readonly dataSource: DataSource,
   ) {}
 
   /**
@@ -47,7 +50,7 @@ export class UsersService {
 
   public async createUser(createUserDto: CreateUserDto) {
     let existingUser = undefined;
-    
+
     try {
       existingUser = await this.usersRepository.findOne({
         where: {
@@ -70,16 +73,13 @@ export class UsersService {
     }
 
     let newUser = this.usersRepository.create(createUserDto);
-    
+
     try {
       newUser = await this.usersRepository.save(newUser);
     } catch (error) {
-      throw new RequestTimeoutException(
-        'Unable to save user in DB',
-        {
-          description: `Something went wrong with the database: ${error.message}`,
-        },
-      );
+      throw new RequestTimeoutException('Unable to save user in DB', {
+        description: `Something went wrong with the database: ${error.message}`,
+      });
     }
     return newUser;
   }
@@ -89,14 +89,15 @@ export class UsersService {
     page: number,
   ) {
     // custom exception
-    throw new HttpException({
-      status: HttpStatus.BAD_REQUEST,
-      error: 'This is a custom exception',
-      fileName: 'users.service.ts',
-      lineNumber: 89, 
-    },
-    HttpStatus.BAD_REQUEST
-  );   
+    throw new HttpException(
+      {
+        status: HttpStatus.BAD_REQUEST,
+        error: 'This is a custom exception',
+        fileName: 'users.service.ts',
+        lineNumber: 89,
+      },
+      HttpStatus.BAD_REQUEST,
+    );
     console.log('profile config', this.profileConfiguration);
     if (this.isAuth()) return 'You are authenticated';
 
@@ -115,7 +116,7 @@ export class UsersService {
     let user = undefined;
     try {
       user = await this.usersRepository.findOneBy({ id });
-    } catch (error) { 
+    } catch (error) {
       throw new RequestTimeoutException(
         'Unable to process your request, please try again',
         {
@@ -129,5 +130,28 @@ export class UsersService {
     }
 
     return user;
+  }
+
+  // DB Transaction method
+  public async createMany(createUsersDto: CreateUserDto[]) {
+    let newUsers: User[] = [];
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+
+    await queryRunner.startTransaction();
+
+    try {
+      for (let user of createUsersDto){
+        let newUser = queryRunner.manager.create(User, user);
+        let result = await queryRunner.manager.save(newUser);
+        newUsers.push(result)
+      }
+
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
   }
 }
