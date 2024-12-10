@@ -21,6 +21,7 @@ import { isInstance } from 'class-validator';
 import { PatchUserDto } from './dtos/patch-user.dto';
 import { UsersService } from './providers/users.service';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { CreateManyUsersDto } from './dtos/create-many-users.dto';
 
 
 
@@ -83,6 +84,19 @@ export class UsersController {
     const newUser = this.userService.createUser(createUserDto);
 
     return newUser;
+  }
+
+  @Post('create-many')
+  /**
+   * Creates a new user.
+   *
+   * @param {CreateUserDto} createUserDto - DTO containing required information for new user.
+   * @returns {String} - A message indicating the user was created.
+   * @throws {Error} - If the user could not be created.
+   */
+  public createManyUsers(@Body() createManyUsersDto: CreateManyUsersDto) {
+    const newUsers = this.userService.createMany(createManyUsersDto);
+    return newUsers;
   }
 
   @Patch()

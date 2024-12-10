@@ -1,2 +1,4 @@
-GET http://localhost:3000/posts
+
+
+GET http://localhost:3000/posts/?startDate=2024-05-31T13:44:48.00Z&limit=10&page=1
 content-type: application/json

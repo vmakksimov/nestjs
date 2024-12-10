@@ -16,6 +16,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigType } from '@nestjs/config';
 import profileConfig from '../config/profile.config';
 import { create } from 'domain';
+import { UsersCreateManyProvider } from './users-create-many.provider';
+import { CreateManyUsersDto } from '../dtos/create-many-users.dto';
 
 /** Business logic for users */
 @Injectable()
@@ -35,7 +37,8 @@ export class UsersService {
     @Inject(profileConfig.KEY)
     private readonly profileConfiguration: ConfigType<typeof profileConfig>,
 
-    private readonly dataSource: DataSource,
+    private readonly usersCreateManyProvider: UsersCreateManyProvider
+
   ) {}
 
   /**
@@ -133,25 +136,7 @@ export class UsersService {
   }
 
   // DB Transaction method
-  public async createMany(createUsersDto: CreateUserDto[]) {
-    let newUsers: User[] = [];
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-
-    await queryRunner.startTransaction();
-
-    try {
-      for (let user of createUsersDto){
-        let newUser = queryRunner.manager.create(User, user);
-        let result = await queryRunner.manager.save(newUser);
-        newUsers.push(result)
-      }
-
-      await queryRunner.commitTransaction();
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-    } finally {
-      await queryRunner.release();
-    }
+  public async createMany(createManyUsersDto: CreateManyUsersDto) {
+    return this.usersCreateManyProvider.createMany(createManyUsersDto);
   }
 }
