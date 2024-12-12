@@ -22,13 +22,16 @@ import { PatchUserDto } from './dtos/patch-user.dto';
 import { UsersService } from './providers/users.service';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateManyUsersDto } from './dtos/create-many-users.dto';
+import { CreateUserProvider } from './providers/create-user.provider';
 
 
 
 @Controller('users')
 @ApiTags('Users')
 export class UsersController {
-  constructor(private readonly userService: UsersService) {}
+  constructor(
+    private readonly userService: UsersService,
+  ) {}
   @Get('/:id?')
   @ApiOperation({
     summary: "Fetches a list of registered users for the docs"

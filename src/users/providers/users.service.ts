@@ -15,9 +15,11 @@ import { CreateUserDto } from '../dtos/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigType } from '@nestjs/config';
 import profileConfig from '../config/profile.config';
-import { create } from 'domain';
 import { UsersCreateManyProvider } from './users-create-many.provider';
 import { CreateManyUsersDto } from '../dtos/create-many-users.dto';
+import { CreateUserProvider } from './create-user.provider';
+import { SignInDto } from 'src/auth/dtos/signin.dto';
+import { FindOneUserByEmailProvider } from './find-one-user-by-email.provider';
 
 /** Business logic for users */
 @Injectable()
@@ -37,7 +39,11 @@ export class UsersService {
     @Inject(profileConfig.KEY)
     private readonly profileConfiguration: ConfigType<typeof profileConfig>,
 
-    private readonly usersCreateManyProvider: UsersCreateManyProvider
+    private readonly usersCreateManyProvider: UsersCreateManyProvider,
+
+    private readonly createUserProvider: CreateUserProvider,
+
+    private readonly findOneUserByEmailProvider: FindOneUserByEmailProvider
 
   ) {}
 
@@ -47,44 +53,10 @@ export class UsersService {
    *
    * @returns {boolean} - True if the user is authenticated, otherwise false.
    */
-  private isAuth() {
-    return this.authService.isAuth();
-  }
+
 
   public async createUser(createUserDto: CreateUserDto) {
-    let existingUser = undefined;
-
-    try {
-      existingUser = await this.usersRepository.findOne({
-        where: {
-          email: createUserDto.email,
-        },
-      });
-    } catch (error) {
-      throw new RequestTimeoutException(
-        'Unable to process your request, please try again',
-        {
-          description: `Something went wrong with the database: ${error.message}`,
-        },
-      );
-    }
-
-    if (existingUser) {
-      throw new BadRequestException(
-        `User with email ${createUserDto.email} already exists`,
-      );
-    }
-
-    let newUser = this.usersRepository.create(createUserDto);
-
-    try {
-      newUser = await this.usersRepository.save(newUser);
-    } catch (error) {
-      throw new RequestTimeoutException('Unable to save user in DB', {
-        description: `Something went wrong with the database: ${error.message}`,
-      });
-    }
-    return newUser;
+    return this.createUserProvider.createUser(createUserDto);
   }
   public findAll(
     getUsersParamDto: GetUsersParamDto,
@@ -102,7 +74,7 @@ export class UsersService {
       HttpStatus.BAD_REQUEST,
     );
     console.log('profile config', this.profileConfiguration);
-    if (this.isAuth()) return 'You are authenticated';
+    // if (this.isAuth()) return 'You are authenticated';
 
     return [
       {
@@ -135,8 +107,13 @@ export class UsersService {
     return user;
   }
 
+  public async findByEmail(email: string) {
+    return this.findOneUserByEmailProvider.findOneUserByEmail(email);
+  }
+
   // DB Transaction method
   public async createMany(createManyUsersDto: CreateManyUsersDto) {
     return this.usersCreateManyProvider.createMany(createManyUsersDto);
   }
+
 }
