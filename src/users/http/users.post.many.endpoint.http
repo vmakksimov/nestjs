@@ -1,20 +1,20 @@
 POST http://localhost:3000/users/create-many
 content-type: application/json
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJqZWN0IjoxNywiZW1haWwiOiJ2bWFra3NpbW92MTJAZ21haWwuY29tIiwiaWF0IjoxNzM0MDkyMjMwLCJleHAiOjE3MzQwOTU4MzAsImF1ZCI6ImxvY2FsaG9zdDozMDAwIiwiaXNzIjoibG9jYWxob3N0OjMwMDAifQ.veoiuRjUL6MRGsMmsorJuHGIYCXK0QSxCxkunA__YbY
 
 {
     "users": [
         {
-    "firstName" : "Viktor4",
-    "lastName" : "Maksimov4",
-    "email" : "vmakksimov4@gmail.com",
+    "firstName" : "Viktor5",
+    "lastName" : "Maksimov5",
+    "email" : "vmakksimov55@gmail.com",
     "password" : "123456-Aa"
     },
 
     {
-    "firstName" : "Viktor5",
-    "lastName" : "Maksimov5",
-    "email" : "vmakksimov5@gmail.com",
+    "firstName" : "Viktor6",
+    "lastName" : "Maksimov6",
+    "email" : "vmakksimov77@gmail.com",
     "password" : "123456-Aa"
     }
     ]

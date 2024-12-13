@@ -13,6 +13,8 @@ import {
   ParseIntPipe,
   DefaultValuePipe,
   ValidationPipe,
+  UseGuards,
+  SetMetadata,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { GetUsersParamDto } from './dtos/get-users-params.dto';
@@ -23,6 +25,9 @@ import { UsersService } from './providers/users.service';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateManyUsersDto } from './dtos/create-many-users.dto';
 import { CreateUserProvider } from './providers/create-user.provider';
+import { AccessTokenGuard } from 'src/auth/guards/access-token/access-token.guard';
+import { Auth } from 'src/auth/decorators/auth.decorator';
+import { AuthType } from 'src/auth/enums/auth-type.enum';
 
 
 
@@ -73,6 +78,8 @@ export class UsersController {
   }
 
   @Post()
+  // @SetMetadata('authType', 'none') // default decorator
+  @Auth(AuthType.None) // custom decorator
   /**
    * Creates a new user.
    *
@@ -89,6 +96,7 @@ export class UsersController {
     return newUser;
   }
 
+  @UseGuards(AccessTokenGuard)
   @Post('create-many')
   /**
    * Creates a new user.

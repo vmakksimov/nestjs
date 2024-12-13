@@ -13,9 +13,13 @@ import { MetaOptionsModule } from './meta-options/meta-options.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PaginationModule } from './common/pagination/pagination.module';
 import environmentValidation from './config/environment.validation';
+import { APP_GUARD, Reflector } from '@nestjs/core';
+import { AccessTokenGuard } from './auth/guards/access-token/access-token.guard';
+import jwtConfig from './auth/config/jwt.config';
+import { JwtModule } from '@nestjs/jwt';
 
 const ENV = process.env.NODE_ENV;
-console.log("ENV", !ENV ? '.env' : `.env.${ENV}`)
+console.log('ENV', !ENV ? '.env' : `.env.${ENV}`);
 @Module({
   imports: [
     UsersModule,
@@ -25,8 +29,10 @@ console.log("ENV", !ENV ? '.env' : `.env.${ENV}`)
       isGlobal: true,
       envFilePath: !ENV ? '.env' : `.env.${ENV}`,
       load: [appConfig, databaseConfig],
-      validationSchema: environmentValidation
+      validationSchema: environmentValidation,
     }),
+    ConfigModule.forFeature(jwtConfig),
+    JwtModule.registerAsync(jwtConfig.asProvider()),
     // TypeOrmModule.forRoot(dbConfig),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -40,13 +46,20 @@ console.log("ENV", !ENV ? '.env' : `.env.${ENV}`)
         database: config.get('database.database'),
         autoLoadEntities: config.get('database.autoLoadEntities'),
         synchronize: config.get('database.synchronize'),
-      }), 
+      }),
     }),
     TagsModule,
     MetaOptionsModule,
     PaginationModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    Reflector,
+    {
+      provide: APP_GUARD,
+      useClass: AccessTokenGuard, // THIS IS GLOBALLY APPLIED ACCROSS ALL MODULES
+    },
+  ],
 })
 export class AppModule {}
