@@ -1,5 +1,6 @@
 POST http://localhost:3000/posts
 content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJqZWN0Ijo1LCJlbWFpbCI6InZtYWtrc2ltb3Y4OEBnbWFpbC5jb20iLCJpYXQiOjE3MzQzNzExNDEsImV4cCI6MTczNDM3NDc0MSwiYXVkIjoibG9jYWxob3N0OjMwMDAiLCJpc3MiOiJsb2NhbGhvc3Q6MzAwMCJ9.100NBxK39qV6GHxv_LEg375Wq4SnoNUFS0ybG0IfF5M
 
 {
     "title" : "Viktor12345",
@@ -8,14 +9,11 @@ content-type: application/json
     "status":  "draft",
     "content" : "test content",
     "schema" : "{\"sidebarEnabled\": true, \"footerActive\": true}",
-    "publishOn": "2024-11-29T07:46:32+0000",
-    //"tags": ["nestjs", "typescript"],
-    "metaOptions": 
-        {
-           "metaValue" : "{\"sidebarEnabled\": false, \"footerActive\": true}"
-           
-        },
-    "authorId": 1,
-    "tags" : [1, 2]
+    "metaOptions": {
+        "metaValue": "{\"sidebarEnabled\": false, \"footerActive\": true}"
+    },
+    "authorId": 5,
+    "tags": [1]
+   
     
 }

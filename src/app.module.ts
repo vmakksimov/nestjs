@@ -17,6 +17,7 @@ import { APP_GUARD, Reflector } from '@nestjs/core';
 import { AccessTokenGuard } from './auth/guards/access-token/access-token.guard';
 import jwtConfig from './auth/config/jwt.config';
 import { JwtModule } from '@nestjs/jwt';
+import { AuthenticationGuard } from './auth/guards/authentication/authentication.guard';
 
 const ENV = process.env.NODE_ENV;
 console.log('ENV', !ENV ? '.env' : `.env.${ENV}`);
@@ -37,15 +38,20 @@ console.log('ENV', !ENV ? '.env' : `.env.${ENV}`);
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
+      useFactory: (config: ConfigService) => (
+        console.log("config", config),
+        console.log('username', config.get('database.username')),
+        console.log('password', config.get('database.password')),
+        console.log("synchonize", config.get('database.syncronize')),
+        {
         type: 'postgres',
         host: config.get('database.host'),
         port: +config.get('database.port'), // convert to number
         username: config.get('database.username'),
         password: config.get('database.password'),
         database: config.get('database.database'),
-        autoLoadEntities: config.get('database.autoLoadEntities'),
-        synchronize: config.get('database.synchronize'),
+        autoLoadEntities: true,
+        synchronize: config.get('database.syncronize'),
       }),
     }),
     TagsModule,
@@ -58,8 +64,9 @@ console.log('ENV', !ENV ? '.env' : `.env.${ENV}`);
     Reflector,
     {
       provide: APP_GUARD,
-      useClass: AccessTokenGuard, // THIS IS GLOBALLY APPLIED ACCROSS ALL MODULES
+      useClass: AuthenticationGuard, // THIS IS GLOBALLY APPLIED ACCROSS ALL MODULES
     },
+    AccessTokenGuard, // MUST be present in order to AUTHENTICATIONGUARD to work
   ],
 })
 export class AppModule {}

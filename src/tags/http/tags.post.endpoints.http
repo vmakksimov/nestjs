@@ -1,5 +1,6 @@
 POST http://localhost:3000/tags
 content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJqZWN0Ijo1LCJlbWFpbCI6InZtYWtrc2ltb3Y4OEBnbWFpbC5jb20iLCJpYXQiOjE3MzQzNzExNDEsImV4cCI6MTczNDM3NDc0MSwiYXVkIjoibG9jYWxob3N0OjMwMDAiLCJpc3MiOiJsb2NhbGhvc3Q6MzAwMCJ9.100NBxK39qV6GHxv_LEg375Wq4SnoNUFS0ybG0IfF5M
 
 {
     "name": "javascript",

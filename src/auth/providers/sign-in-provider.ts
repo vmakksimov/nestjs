@@ -12,6 +12,7 @@ import { UsersService } from 'src/users/providers/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigType } from '@nestjs/config';
 import jwtConfig from '../config/jwt.config';
+import { ActiveUserData } from '../interfaces/active-user-data-inteface';
 
 @Injectable()
 export class SignInProvider {
@@ -51,7 +52,7 @@ export class SignInProvider {
       {
         subject: user.id,
         email: user.email,
-      },
+      } as ActiveUserData,
       {
         secret: this.jwtConfiguration.secret,
         audience: this. jwtConfiguration.audience,

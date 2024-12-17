@@ -18,10 +18,13 @@ import { PatchPostDto } from '../dto/patch-post.dto';
 import { GetPostsDto } from '../dto/get-posts.dto';
 import { PaginationProvider } from 'src/common/pagination/providers/pagination.provider';
 import { Paginated } from 'src/common/interfaces/paginated.interface';
+import { ActiveUserData } from 'src/auth/interfaces/active-user-data-inteface';
+import { CreatePostProvider } from './create-post-provider';
 
 @Injectable()
 export class PostsService {
   constructor(
+    private readonly createPostProvider: CreatePostProvider,
     private readonly usersService: UsersService,
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
@@ -33,49 +36,50 @@ export class PostsService {
     private readonly paginationProvider: PaginationProvider,
   ) {}
 
-  public async createPost(@Body() createPostDto: CreatePostDto) {
+  public async createPost(@Body() createPostDto: CreatePostDto, user: ActiveUserData) {
+    return this.createPostProvider.createPost(createPostDto, user);
     // const { metaOptions, authorId, tags } = createPostDto;\
-    let author = undefined;
-    let tags = undefined;
+    // let author = undefined;
+    // let tags = undefined;
 
-    try {
-      author = await this.usersService.findById(createPostDto.authorId);
-    } catch (error) {
-      throw new BadRequestException(
-        `User with id ${createPostDto.authorId} does not exist`,
-      );
-    }
+    // try {
+    //   author = await this.usersService.findById(createPostDto.authorId);
+    // } catch (error) {
+    //   throw new BadRequestException(
+    //     `User with id ${createPostDto.authorId} does not exist`,
+    //   );
+    // }
 
-    try {
-      tags = await this.tagsService.findMultipleTags(createPostDto.tags);
-    } catch (error) {
-      throw new BadRequestException(
-        `Tag with id ${createPostDto.tags} does not exist`,
-      );
-    }
+    // try {
+    //   tags = await this.tagsService.findMultipleTags(createPostDto.tags);
+    // } catch (error) {
+    //   throw new BadRequestException(
+    //     `Tag with id ${createPostDto.tags} does not exist`,
+    //   );
+    // }
 
-    let post = this.postRepository.create({
-      ...createPostDto,
-      author: author,
-      tags: tags,
-    });
-    if (createPostDto.metaOptions) {
-      const metaOptionEntity = this.postMetaOptionsRepository.create(
-        createPostDto.metaOptions,
-      );
-      const savedMetaOption =
-        await this.postMetaOptionsRepository.save(metaOptionEntity);
-      post.metaOptions = savedMetaOption; // Link the saved MetaOption to the Post
-    }
+    // let post = this.postRepository.create({
+    //   ...createPostDto,
+    //   author: author,
+    //   tags: tags,
+    // });
+    // if (createPostDto.metaOptions) {
+    //   const metaOptionEntity = this.postMetaOptionsRepository.create(
+    //     createPostDto.metaOptions,
+    //   );
+    //   const savedMetaOption =
+    //     await this.postMetaOptionsRepository.save(metaOptionEntity);
+    //   post.metaOptions = savedMetaOption; // Link the saved MetaOption to the Post
+    // }
 
-    try {
-      await this.postRepository.save(post);
-      return;
-    } catch (error) {
-      throw new BadRequestException(
-        `Error while saving post to the DB: ${error.message}`,
-      );
-    }
+    // try {
+    //   await this.postRepository.save(post);
+    //   return;
+    // } catch (error) {
+    //   throw new BadRequestException(
+    //     `Error while saving post to the DB: ${error.message}`,
+    //   );
+    // }
   }
   public async findAll(postQuery: GetPostsDto, userId: string): Promise<Paginated<Post>> {
     // setting relations if Eager loading is not set in the entity

@@ -14,7 +14,7 @@ export class AccessTokenGuard implements CanActivate {
     private readonly jwtService: JwtService,
     @Inject(jwtConfig.KEY)
     private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
-    private readonly reflector: Reflector
+    // private readonly reflector: Reflector
   ){
 
   }
@@ -22,15 +22,15 @@ export class AccessTokenGuard implements CanActivate {
     context: ExecutionContext,
   ):  Promise<boolean> {
 
-    const authTypes = this.reflector.get<AuthType[]>(
-      AUTH_TYPE_KEY,
-      context.getHandler()
-    )
+    // const authTypes = this.reflector.get<AuthType[]>(
+    //   AUTH_TYPE_KEY,
+    //   context.getHandler()
+    // )
 
       // Allow access if `AuthType.None` is present
-      if (authTypes?.includes(AuthType.None)) {
-        return true;
-      }
+      // if (authTypes?.includes(AuthType.None)) {
+      //   return true;
+      // }
 
     const request = context.switchToHttp().getRequest();
     const token = this.extractRequestFromHeader(request);

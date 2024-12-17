@@ -60,6 +60,7 @@ export class UsersController {
     example: 1
   })
 
+  @Auth(AuthType.Bearer)
   public getUsers(
     @Param() getUsersParamDto: GetUsersParamDto,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
@@ -96,7 +97,7 @@ export class UsersController {
     return newUser;
   }
 
-  @UseGuards(AccessTokenGuard)
+  // @UseGuards(AccessTokenGuard)
   @Post('create-many')
   /**
    * Creates a new user.

@@ -12,7 +12,7 @@ export class AuthController {
 
     
     @Post('sign-in')
-    // @Auth(AuthType.None)
+    @Auth(AuthType.None)
     @HttpCode(HttpStatus.OK)
     
     public async signIn(@Body() signInDto: SignInDto){
