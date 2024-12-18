@@ -15,6 +15,8 @@ import {
   ValidationPipe,
   UseGuards,
   SetMetadata,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { GetUsersParamDto } from './dtos/get-users-params.dto';
@@ -81,6 +83,7 @@ export class UsersController {
   @Post()
   // @SetMetadata('authType', 'none') // default decorator
   @Auth(AuthType.None) // custom decorator
+  // @UseInterceptors(ClassSerializerInterceptor)
   /**
    * Creates a new user.
    *

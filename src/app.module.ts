@@ -13,11 +13,12 @@ import { MetaOptionsModule } from './meta-options/meta-options.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PaginationModule } from './common/pagination/pagination.module';
 import environmentValidation from './config/environment.validation';
-import { APP_GUARD, Reflector } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR, Reflector } from '@nestjs/core';
 import { AccessTokenGuard } from './auth/guards/access-token/access-token.guard';
 import jwtConfig from './auth/config/jwt.config';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthenticationGuard } from './auth/guards/authentication/authentication.guard';
+import { DataResponseInterceptor } from './common/interceptors/data-response/data-response.interceptor';
 
 const ENV = process.env.NODE_ENV;
 console.log('ENV', !ENV ? '.env' : `.env.${ENV}`);
@@ -65,6 +66,10 @@ console.log('ENV', !ENV ? '.env' : `.env.${ENV}`);
     {
       provide: APP_GUARD,
       useClass: AuthenticationGuard, // THIS IS GLOBALLY APPLIED ACCROSS ALL MODULES
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: DataResponseInterceptor, // APPLIED GLOBALLY ACROSS ALL MODULES
     },
     AccessTokenGuard, // MUST be present in order to AUTHENTICATIONGUARD to work
   ],
