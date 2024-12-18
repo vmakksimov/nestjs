@@ -13,6 +13,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigType } from '@nestjs/config';
 import jwtConfig from '../config/jwt.config';
 import { ActiveUserData } from '../interfaces/active-user-data-inteface';
+import { GenerateTokensProvider } from './generate-tokens.provider';
 
 @Injectable()
 export class SignInProvider {
@@ -23,6 +24,7 @@ export class SignInProvider {
     private readonly jwtService: JwtService,
     @Inject(jwtConfig.KEY)
     private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
+    private readonly generateTokenProvider: GenerateTokensProvider
   ) {}
 
   public async signIn(signInDto: SignInDto) {
@@ -48,18 +50,20 @@ export class SignInProvider {
       throw new UnauthorizedException('Failed to login, password mismatch');
     }
 
-    const accessToken = await this.jwtService.signAsync(
-      {
-        subject: user.id,
-        email: user.email,
-      } as ActiveUserData,
-      {
-        secret: this.jwtConfiguration.secret,
-        audience: this. jwtConfiguration.audience,
-        issuer: this.jwtConfiguration.issuer,
-        expiresIn: this.jwtConfiguration.accessTokenTtl
-      },
-    );
-    return {accessToken};
+    const {accessToken, refreshToken} = await this.generateTokenProvider.generateTokens(user);
+
+    // const accessToken = await this.jwtService.signAsync(
+    //   {
+    //     subject: user.id,
+    //     email: user.email,
+    //   } as ActiveUserData,
+    //   {
+    //     secret: this.jwtConfiguration.secret,
+    //     audience: this. jwtConfiguration.audience,
+    //     issuer: this.jwtConfiguration.issuer,
+    //     expiresIn: this.jwtConfiguration.accessTokenTtl
+    //   },
+    // );
+    return {accessToken, refreshToken};
   }
 }

@@ -1,21 +1,22 @@
 import { Injectable, forwardRef, Inject, BadRequestException } from '@nestjs/common';
 import { SignInDto } from '../dtos/signin.dto';
 import { SignInProvider } from './sign-in-provider';
+import { RefreshTokenDto } from '../dtos/refresh-token.dto';
+import { RefreshTokensProvider } from './refresh-tokens.provider';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly signInProvider: SignInProvider
+    private readonly signInProvider: SignInProvider,
+    private readonly refreshTokensProvider: RefreshTokensProvider
 ) {}
   public signIn(signInDto: SignInDto) {
-    const token = this.isAuth(signInDto);
-    
-    return token;
+    return this.signInProvider.signIn(signInDto);
     
   }
 
-  public async isAuth(signInDto: SignInDto) {
-    return this.signInProvider.signIn(signInDto);
+  public async refreshToken(refreshTokenDto: RefreshTokenDto) {
+    return this.refreshTokensProvider.refreshTokens(refreshTokenDto);
   }
 
 

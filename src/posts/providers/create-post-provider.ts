@@ -18,7 +18,7 @@ export class CreatePostProvider {
     private readonly tagsService: TagsService,
     private readonly usersService: UsersService,
   ) {}
-  public async createPost(@Body() createPostDto: CreatePostDto, user: ActiveUserData) {
+  public async createPost(createPostDto: CreatePostDto, user: ActiveUserData) {
     let author = undefined;
     let tags = undefined;
 
@@ -26,7 +26,7 @@ export class CreatePostProvider {
       author = await this.usersService.findById(user.subject);
     } catch (error) {
       throw new BadRequestException(
-        `User with id ${createPostDto.authorId} does not exist`,
+        `User with id ${user.subject} does not exist`,
       );
     }
 
