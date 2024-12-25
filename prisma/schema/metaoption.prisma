@@ -1,0 +1,7 @@
+model MetaOption {
+    id Int @id @default(autoincrement())
+    metaValue String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @default(now())
+   
+}

@@ -29,7 +29,7 @@ export class UploadsService {
   public async uploadFile(file: Express.Multer.File) {
     try {
       if (
-        !['image/gif', 'image/jpeg', 'imageeeee/png', 'image/jpg'].includes(
+        !['image/gif', 'image/jpeg', 'image/png', 'image/jpg'].includes(
           file.mimetype,
         )
       ) {

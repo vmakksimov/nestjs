@@ -1,0 +1,6 @@
+enum postType {
+    POST
+    PAGE
+    STORY
+    SERIES
+}

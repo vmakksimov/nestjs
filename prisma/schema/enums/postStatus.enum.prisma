@@ -1,0 +1,6 @@
+enum postStatus {
+    DRAFT
+    SCHEDULED
+    REVIEW
+    PUBLISHED
+}
