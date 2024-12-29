@@ -23,6 +23,7 @@ import { FindOneUserByEmailProvider } from './find-one-user-by-email.provider';
 import { FindOneByGoogleIdProvider } from './find-one-by-google-id.provider';
 import { CreateGoogleUserProvider } from './create-google-user.provider';
 import { GoogleUser } from '../interfaces/google-user-interface';
+import { DatabasePrismaService } from 'src/database-prisma/providers/database-prisma.service';
 
 /** Business logic for users */
 @Injectable()
@@ -36,8 +37,8 @@ export class UsersService {
   constructor(
     @Inject(forwardRef(() => AuthService))
     private readonly authService: AuthService,
-    @InjectRepository(User)
-    private readonly usersRepository: Repository<User>,
+    
+    private readonly prisma: DatabasePrismaService,
 
     @Inject(profileConfig.KEY)
     private readonly profileConfiguration: ConfigType<typeof profileConfig>,
@@ -52,7 +53,9 @@ export class UsersService {
 
     private readonly createGoogleUserProvider: CreateGoogleUserProvider
 
-  ) {}
+  ) {
+    console.log('Prisma Service Initialized:', prisma);
+  }
 
   /**
    * Checks if the current user is authenticated by delegating the call
@@ -96,9 +99,13 @@ export class UsersService {
   }
   public async findById(id: number) {
     let user = undefined;
+    console.log('here in findById', id);
     try {
-      user = await this.usersRepository.findOneBy({ id });
+      console.log('user in findById', await this.prisma.user.findUnique({where: {id}}));
+      user = await this.prisma.user.findUnique({where: {id}});
+      console.log('Query result:', user);
     } catch (error) {
+      console.error('Error during query:', error.message);
       throw new RequestTimeoutException(
         'Unable to process your request, please try again',
         {

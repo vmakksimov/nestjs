@@ -34,6 +34,7 @@ export class User {
         length: 96,
         nullable: false
     })
+    
     @Exclude() // class serialize interceptor exclude the password from the payload response
     password?: string;
 

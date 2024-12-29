@@ -1,22 +1,19 @@
 model Post {
-  id                Int          @id @default(autoincrement())
-  title             String       @db.VarChar(96)
-  postType          postType     @default(POST)
-  slug              String       @unique @db.VarChar(96)
-  status            postStatus   @default(DRAFT)
-  content           String
-  schema            String?      @db.Text
-  featuredImageUrl  String?      @db.VarChar(255)
-  publishOn         DateTime?
-
-  tags              Tag[]        @relation("PostTags", fields: [], references: [], onDelete: Cascade)
-  metaOptions       MetaOption?  @relation(fields: [metaOptionsId], references: [id], onDelete: Cascade)
-  metaOptionsId     Int?
-
-  author            User?        @relation(fields: [authorId], references: [id], onDelete: SetNull)
-  authorId          Int?
+  id               Int        @id @default(autoincrement())
+  title            String     @db.VarChar(96)
+  postType         postType   @default(post)
+  slug             String     @unique @db.VarChar(96)
+  status           postStatus @default(draft)
+  content          String?
+  schema           Json?  
+  featuredImageUrl String?    @db.VarChar(1024)
+  publishOn        DateTime?
+  tags             PostTag[]
+  metaOptions   MetaOption?
+  author    User?     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId  Int?
+  
 
   // Relation back-references
   @@map("posts")
 }
-

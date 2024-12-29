@@ -30,7 +30,6 @@ import { CreateUserProvider } from './providers/create-user.provider';
 import { AccessTokenGuard } from 'src/auth/guards/access-token/access-token.guard';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { AuthType } from 'src/auth/enums/auth-type.enum';
-import { Prisma } from '@prisma/client';
 
 @Controller('users')
 @ApiTags('Users')

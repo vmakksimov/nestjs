@@ -36,11 +36,6 @@ export class CreateUserProvider {
           );
         }
     
-        // let newUser = this.prisma.user.create({
-        //     ...createUserDto, // copies all the properties from createUserDto and creates new object
-        //     password: await this.hashingProvider.hashPassword(createUserDto.password), 
-        // });
-    
         try {
           const newUser = await this.prisma.user.create({
             data: {
@@ -59,4 +54,5 @@ export class CreateUserProvider {
         }
         
       }
+
 }

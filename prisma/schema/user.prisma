@@ -4,6 +4,6 @@ model User {
   lastName  String?
   email     String  @unique
   password  String
-  googleId  String?
+  googleId  String? @unique
   posts     Post[]
 }

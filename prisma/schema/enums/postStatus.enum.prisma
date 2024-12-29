@@ -1,6 +1,6 @@
 enum postStatus {
-    DRAFT
-    SCHEDULED
-    REVIEW
-    PUBLISHED
+  draft
+  scheduled
+  review
+  published
 }

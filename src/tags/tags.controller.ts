@@ -20,8 +20,8 @@ export class TagsController {
   }
 
   // /tags/soft-delete
-  @Delete('soft-delete')
-  public async softDelete(@Query('id', ParseIntPipe) id: number){
-    return this.tagsService.softRemove(id);
-  }
+  // @Delete('soft-delete')
+  // public async softDelete(@Query('id', ParseIntPipe) id: number){
+  //   return this.tagsService.softRemove(id);
+  // }
 }
