@@ -8,7 +8,7 @@ import {
 import { UsersService } from 'src/users/providers/users.service';
 import { CreatePostDto } from '../dto/create-post.dto';
 import { Repository } from 'typeorm';
-import { Post } from '../post.entity';
+import { Post } from '@prisma/client';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MetaOption } from 'src/meta-options/meta-option.entity';
 import { CreatePostMetaOptionsDto } from 'src/meta-options/dtos/create-post-meta-options.dto';
@@ -20,20 +20,16 @@ import { PaginationProvider } from 'src/common/pagination/providers/pagination.p
 import { Paginated } from 'src/common/interfaces/paginated.interface';
 import { ActiveUserData } from 'src/auth/interfaces/active-user-data-inteface';
 import { CreatePostProvider } from './create-post-provider';
+import { DatabasePrismaService } from 'src/database-prisma/providers/database-prisma.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class PostsService {
   constructor(
     private readonly createPostProvider: CreatePostProvider,
-    private readonly usersService: UsersService,
-    @InjectRepository(Post)
-    private readonly postRepository: Repository<Post>,
-    @InjectRepository(MetaOption)
-    private readonly postMetaOptionsRepository: Repository<MetaOption>,
-
     private readonly tagsService: TagsService,
-
     private readonly paginationProvider: PaginationProvider,
+    private readonly prisma: DatabasePrismaService
   ) {}
 
   public async createPost(@Body() createPostDto: CreatePostDto, user: ActiveUserData) {
@@ -83,12 +79,12 @@ export class PostsService {
   }
   public async findAll(postQuery: GetPostsDto, userId: string): Promise<Paginated<Post>> {
     // setting relations if Eager loading is not set in the entity
-    let posts = await this.paginationProvider.paginateQuery(
+    let posts = await this.paginationProvider.paginateQuery<Post>(
       {
         limit: postQuery.limit,
         page: postQuery.page,
       },
-      this.postRepository,
+      Prisma.ModelName.Post
     );
     return posts;
   }
@@ -112,8 +108,10 @@ export class PostsService {
     }
 
     try {
-      post = await this.postRepository.findOneBy({
-        id: patchPostDto.id,
+      post = await this.prisma.post.findUnique({
+        where : {
+          id : patchPostDto.id
+        }
       });
     } catch (error) {
       throw new BadRequestException(
@@ -136,19 +134,19 @@ export class PostsService {
     post.publishOn = patchPostDto.publishOn ?? post.publishOn;
     post.tags = tags;
 
-    try {
-      await this.postRepository.save(post);
-      return;
-    } catch (error) {
-      throw new BadRequestException(
-        `Error while saving post to the DB: ${error.message}`,
-      );
-    }
+    // try {
+    //   await this.postRepository.save(post);
+    //   return;
+    // } catch (error) {
+    //   throw new BadRequestException(
+    //     `Error while saving post to the DB: ${error.message}`,
+    //   );
+    // }
   }
 
   public async deletePost(id: number) {
     console.log('id of deletePOst in service', id);
-    let post = await this.postRepository.delete(id);
+    let post = await this.prisma.post.delete({where: {id}});
     // await this.postRepository.delete(id)
     // await this.postMetaOptionsRepository.delete(post.metaOptions.id)
 
