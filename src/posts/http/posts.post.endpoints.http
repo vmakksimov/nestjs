@@ -1,19 +1,19 @@
 POST http://localhost:3000/posts
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJqZWN0Ijo1LCJlbWFpbCI6InZtYWtrc2ltb3Y4OEBnbWFpbC5jb20iLCJpYXQiOjE3MzQzNzExNDEsImV4cCI6MTczNDM3NDc0MSwiYXVkIjoibG9jYWxob3N0OjMwMDAiLCJpc3MiOiJsb2NhbGhvc3Q6MzAwMCJ9.100NBxK39qV6GHxv_LEg375Wq4SnoNUFS0ybG0IfF5M
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJqZWN0IjoyLCJlbWFpbCI6InZtYWtrc2ltbzFAZ21haWwuY29tIiwiaWF0IjoxNzM1MzE5MjI1LCJleHAiOjE3MzUzMjI4MjUsImF1ZCI6ImxvY2FsaG9zdDozMDAwIiwiaXNzIjoibG9jYWxob3N0OjMwMDAifQ.9dk44n93EOFHtQwKRZsXZJVmJyowdnZ6TViFNeWQHYs
 
 {
-    "title" : "Viktor12345",
+    "title" : "The uni",
     "postType": "post",
-    "slug" : "slug-test-js-9",
+    "slug" : "slug-test-js-5",
     "status":  "draft",
     "content" : "test content",
     "schema" : "{\"sidebarEnabled\": true, \"footerActive\": true}",
     "metaOptions": {
         "metaValue": "{\"sidebarEnabled\": false, \"footerActive\": true}"
     },
-    "authorId": 5,
-    "tags": [1]
+    "tags" : [2]
+   
    
     
 }
