@@ -31,8 +31,6 @@ import { AccessTokenGuard } from 'src/auth/guards/access-token/access-token.guar
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { AuthType } from 'src/auth/enums/auth-type.enum';
 
-
-
 @Controller('users')
 @ApiTags('Users')
 export class UsersController {
@@ -41,27 +39,26 @@ export class UsersController {
   ) {}
   @Get('/:id?')
   @ApiOperation({
-    summary: "Fetches a list of registered users for the docs"
+    summary: 'Fetches a list of registered users for the docs',
   })
   @ApiResponse({
     status: 200,
-    description: 'Users fetched succesfully based on the query'
+    description: 'Users fetched succesfully based on the query',
   })
   @ApiQuery({
     name: 'limit',
     type: 'number',
     required: false,
-    description: "The number of entries returned from query",
-    example: 10
+    description: 'The number of entries returned from query',
+    example: 10,
   })
   @ApiQuery({
     name: 'page',
     type: 'number',
     required: false,
-    description: "The position of the page we want to return",
-    example: 1
+    description: 'The position of the page we want to return',
+    example: 1,
   })
-
   @Auth(AuthType.Bearer)
   public getUsers(
     @Param() getUsersParamDto: GetUsersParamDto,
@@ -71,14 +68,30 @@ export class UsersController {
     console.log('type of id,', getUsersParamDto instanceof GetUsersParamDto);
     console.log('query,', limit);
 
-    const allusers = this.userService.findAll(
-      getUsersParamDto,
-      limit,
-      page,
-    )
+    const allusers = this.userService.findAll(getUsersParamDto, limit, page);
 
     return allusers;
   }
+
+  // @Post()
+  // // @SetMetadata('authType', 'none') // default decorator
+  // @Auth(AuthType.None) // custom decorator
+  // // @UseInterceptors(ClassSerializerInterceptor)
+  // /**
+  //  * Creates a new user.
+  //  *
+  //  * @param {CreateUserDto} createUserDto - DTO containing required information for new user.
+  //  * @returns {String} - A message indicating the user was created.
+  //  * @throws {Error} - If the user could not be created.
+  //  */
+  // public createUsers(@Body() createUserDto: CreateUserDto) {
+  //   // console.log('body', body)
+  //   const { firstName, lastName, email, password } = createUserDto;
+  //   console.log(firstName, lastName, email, password);
+  //   const newUser = this.userService.createUser(createUserDto);
+
+  //   return newUser;
+  // }
 
   @Post()
   // @SetMetadata('authType', 'none') // default decorator

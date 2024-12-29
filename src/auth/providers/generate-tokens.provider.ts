@@ -2,8 +2,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import jwtConfig from '../config/jwt.config';
 import { ConfigType } from '@nestjs/config';
-import { User } from 'src/users/user.entity';
+
 import { ActiveUserData } from '../interfaces/active-user-data-inteface';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class GenerateTokensProvider {

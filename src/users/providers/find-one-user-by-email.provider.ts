@@ -5,23 +5,25 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../user.entity';
 import { Repository } from 'typeorm';
 import { SignInDto } from 'src/auth/dtos/signin.dto';
+import { DatabasePrismaService } from 'src/database-prisma/providers/database-prisma.service';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class FindOneUserByEmailProvider {
   constructor(
-    @InjectRepository(User)
-    private readonly usersRepository: Repository<User>,
+    private readonly prisma: DatabasePrismaService,
   ) {}
 
   public async findOneUserByEmail(email: string) {
     let user: User | undefined = undefined;
 
     try {
-      user = await this.usersRepository.findOne({
-        where: { email: email },
+      user = await this.prisma.user.findUnique({
+        where: {
+          email,
+        },
       });
     } catch (error) {
       throw new RequestTimeoutException(error.message, {

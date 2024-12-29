@@ -20,6 +20,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuthenticationGuard } from './auth/guards/authentication/authentication.guard';
 import { DataResponseInterceptor } from './common/interceptors/data-response/data-response.interceptor';
 import { UploadsModule } from './uploads/uploads.module';
+import { DatabasePrismaModule } from './database-prisma/database-prisma.module';
 
 const ENV = process.env.NODE_ENV;
 console.log('ENV', !ENV ? '.env' : `.env.${ENV}`);
@@ -41,10 +42,6 @@ console.log('ENV', !ENV ? '.env' : `.env.${ENV}`);
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => (
-        console.log("config", config),
-        console.log('username', config.get('database.username')),
-        console.log('password', config.get('database.password')),
-        console.log("synchonize", config.get('database.syncronize')),
         {
         type: 'postgres',
         host: config.get('database.host'),
@@ -60,6 +57,7 @@ console.log('ENV', !ENV ? '.env' : `.env.${ENV}`);
     MetaOptionsModule,
     PaginationModule,
     UploadsModule,
+    DatabasePrismaModule,
   ],
   controllers: [AppController],
   providers: [
@@ -73,7 +71,8 @@ console.log('ENV', !ENV ? '.env' : `.env.${ENV}`);
       provide: APP_INTERCEPTOR,
       useClass: DataResponseInterceptor, // APPLIED GLOBALLY ACROSS ALL MODULES
     },
-    AccessTokenGuard, // MUST be present in order to AUTHENTICATIONGUARD to work
+    AccessTokenGuard,// MUST be present in order to AUTHENTICATIONGUARD to work
+
   ],
 })
 export class AppModule {}
