@@ -1,0 +1,19 @@
+model Post {
+  id               Int        @id @default(autoincrement())
+  title            String     @db.VarChar(96)
+  postType         postType   @default(post)
+  slug             String     @unique @db.VarChar(96)
+  status           postStatus @default(draft)
+  content          String?
+  schema           Json?  
+  featuredImageUrl String?    @db.VarChar(1024)
+  publishOn        DateTime?
+  tags             PostTag[]
+  metaOptions   MetaOption?
+  author    User?     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId  Int?
+  
+
+  // Relation back-references
+  @@map("posts")
+}

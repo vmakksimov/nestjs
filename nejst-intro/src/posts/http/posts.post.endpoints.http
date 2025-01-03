@@ -1,0 +1,19 @@
+POST http://localhost:3000/posts
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJqZWN0IjoyLCJlbWFpbCI6InZtYWtrc2ltbzFAZ21haWwuY29tIiwiaWF0IjoxNzM1MzE5MjI1LCJleHAiOjE3MzUzMjI4MjUsImF1ZCI6ImxvY2FsaG9zdDozMDAwIiwiaXNzIjoibG9jYWxob3N0OjMwMDAifQ.9dk44n93EOFHtQwKRZsXZJVmJyowdnZ6TViFNeWQHYs
+
+{
+    "title" : "The uni",
+    "postType": "post",
+    "slug" : "slug-test-js-5",
+    "status":  "draft",
+    "content" : "test content",
+    "schema" : "{\"sidebarEnabled\": true, \"footerActive\": true}",
+    "metaOptions": {
+        "metaValue": "{\"sidebarEnabled\": false, \"footerActive\": true}"
+    },
+    "tags" : [2]
+   
+   
+    
+}

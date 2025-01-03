@@ -1,0 +1,7 @@
+{
+    "editor.inlineSuggest.showToolbar": "always",
+    "editor.inlineSuggest.suppressSuggestions": true,
+    "diffEditor.experimental.useTrueInlineView": true,
+    "editor.inlineCompletionsAccessibilityVerbose": true,
+    "editor.inlineSuggest.syntaxHighlightingEnabled": true
+}

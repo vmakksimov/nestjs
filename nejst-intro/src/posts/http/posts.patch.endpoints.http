@@ -1,0 +1,19 @@
+PATCH http://localhost:3000/posts
+content-type: application/json
+
+
+{   
+    "id": 1234,
+    "title" : "Viktor12345",
+    "postType": "post",
+    "slug" : "slug-test-js",
+    "status":  "draft",
+    "publishOn": "2024-11-29T07:46:32+0000",
+    "tags": ["nestjs", "typescript"],
+    "metaOptions": [
+        {
+            "key": "testkey",
+            "value" :"testvalue"
+        }
+    ]
+}
