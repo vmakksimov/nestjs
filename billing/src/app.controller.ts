@@ -1,7 +1,7 @@
 import { Controller, Get, Inject, OnModuleInit } from '@nestjs/common';
 import { AppService } from './app.service';
-import { ClientKafka, EventPattern } from '@nestjs/microservices';
-
+import { ClientKafka, Ctx, EventPattern, KafkaContext, Payload } from '@nestjs/microservices';
+import {POSTS_PATTERNS} from '../../libs/contracts/src/posts/posts.pattern'
 @Controller()
 export class AppController implements OnModuleInit {
   constructor(
@@ -16,12 +16,14 @@ export class AppController implements OnModuleInit {
   }
 
   @EventPattern('order_created')
-  handleOrderCreated(data: any){
+  handleOrderCreated(@Payload() data: any, @Ctx() context: KafkaContext){
     console.log('data in billing', data);
+    console.log('Received on topic:', context.getTopic());
+  console.log('Partition:', context.getPartition());
     return this.appService.handleOrderCreated(data)
   }
 
   onModuleInit(){
-    return this.authClient.subscribeToResponseOf('get_user');
+    return this.authClient.subscribeToResponseOf(POSTS_PATTERNS.GET_USER);
   }
 }
