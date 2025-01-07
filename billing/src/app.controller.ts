@@ -2,11 +2,12 @@ import { Controller, Get, Inject, OnModuleInit } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ClientKafka, Ctx, EventPattern, KafkaContext, Payload } from '@nestjs/microservices';
 import {POSTS_PATTERNS} from '../../libs/contracts/src/posts/posts.pattern'
+import { AUTH_SERVICE } from './constant';
 @Controller()
 export class AppController implements OnModuleInit {
   constructor(
     private readonly appService: AppService,
-    @Inject('AUTH_SERVICE')
+    @Inject(AUTH_SERVICE)
     private readonly authClient: ClientKafka
   ) {}
 
